@@ -3,29 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Timetable Generator</title>
+    <title>AI Routine Organizer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>AI Timetable Generator</h1>
-    </header>
-    
-    <div id="questions-section">
-        <div id="question-container">
-            <p id="question">What is your typical work/school schedule?</p>
-            <textarea id="user-answer" placeholder="Your answer..."></textarea>
-            <button id="next-question">Next</button>
+    <div class="container">
+        <div class="question-box">
+            <h2 id="question-text">What is your typical work/school schedule?</h2>
+            <textarea id="user-answer"></textarea>
+            <button id="next-btn">Next</button>
         </div>
     </div>
-
-    <div id="result-section" style="display: none;">
-        <h2>Your Suggested Timetable:</h2>
-        <div id="weekly-view">
-            <!-- Timetable will be generated here -->
-        </div>
+    <div class="timetable-container hidden">
+        <h2>Your Generated Timetable</h2>
+        <div id="timetable"></div>
+        <button id="customize-btn">Customize</button>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>

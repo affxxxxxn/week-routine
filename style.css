@@ -6,24 +6,37 @@ body {
 }
 
 .container {
-    margin: 50px auto;
-    width: 80%;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+h1 {
+    color: #0B4F6C;
+}
+
+#question-container {
+    margin-bottom: 20px;
+}
+
+#answer-box {
+    width: 60%;
+    padding: 10px;
+    font-size: 16px;
 }
 
 button {
-    background-color: #0B4F6C;
+    padding: 10px 20px;
+    background-color: #01BAEF;
     color: white;
     border: none;
-    padding: 10px 20px;
     cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
 }
 
 button:hover {
-    background-color: #01BAEF;
-}
-
-.hidden {
-    display: none;
+    background-color: #0B4F6C;
 }
 
 table {
@@ -43,14 +56,19 @@ th {
     color: white;
 }
 
-.task {
-    color: white;
-    font-weight: bold;
-    padding: 5px;
+td {
+    background-color: #FBFBFF;
 }
 
-.task.study { background-color: #FFA500; }   /* Orange */
-.task.leisure { background-color: #32CD32; } /* Green */
-.task.work { background-color: #DC143C; }    /* Red */
-.task.friends { background-color: #8A2BE2; } /* Purple */
-.task.gym { background-color: #0000FF; }     /* Blue */
+.task {
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+/* Task colors */
+.work { background-color: #FF6B6B; }
+.study { background-color: #4CAF50; }
+.leisure { background-color: #FFC107; }
+.friends { background-color: #673AB7; }
+.gym { background-color: #E91E63; }

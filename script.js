@@ -1,97 +1,121 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const questionContainer = document.getElementById("question-container");
-    const questionText = document.getElementById("question-text");
-    const answerBox = document.getElementById("answer-box");
-    const nextButton = document.getElementById("next-button");
-    const timetableContainer = document.getElementById("timetable-container");
-    const timetableBody = document.querySelector("#timetable tbody");
+    const startBtn = document.getElementById("startBtn");
+    const questionContainer = document.getElementById("questionContainer");
+    const questionText = document.getElementById("questionText");
+    const answerInput = document.getElementById("answerInput");
+    const nextBtn = document.getElementById("nextBtn");
+    const timetableContainer = document.getElementById("timetableContainer");
+    const timetableBody = document.getElementById("timetableBody");
+    const customizeBtn = document.getElementById("customizeBtn");
 
-    let userInputs = {};
+    let userResponses = {};
     let currentQuestion = 0;
 
     const questions = [
-        { key: "wakeTime", text: "What time do you wake up? (e.g., 7:00 AM)" },
-        { key: "sleepTime", text: "What time do you sleep? (e.g., 10:00 PM)" },
-        { key: "workHours", text: "What are your work/school hours? (e.g., 8:00 AM - 3:00 PM, or type 'none')" },
-        { key: "studyTime", text: "How many hours per day do you want to study?" },
-        { key: "leisureTime", text: "How many hours per day for leisure?" },
-        { key: "friendsTime", text: "How many hours per week for friends?" },
-        { key: "gymTime", text: "How many hours per week for gym?" }
+        "What time do you wake up? (e.g., 7:00 AM)",
+        "What time do you sleep? (e.g., 10:00 PM)",
+        "What are your work/school hours? (e.g., 7:40 AM - 3:20 PM)",
+        "How many hours do you want for study each day?",
+        "How many hours do you want for leisure each day?",
+        "How many hours do you want for gym each day?",
+        "How many hours do you want for friends/socializing each day?"
     ];
 
-    function askQuestion() {
-        if (currentQuestion < questions.length) {
-            questionText.innerText = questions[currentQuestion].text;
-            answerBox.value = "";
-            answerBox.style.display = "block";
-            nextButton.style.display = "block";
-        } else {
-            questionContainer.style.display = "none";
-            generateTimetable();
-        }
-    }
-
-    nextButton.addEventListener("click", function () {
-        let answer = answerBox.value.trim();
-        if (answer === "") return;
-
-        let key = questions[currentQuestion].key;
-        userInputs[key] = answer;
-        currentQuestion++;
+    startBtn.addEventListener("click", function () {
+        startBtn.classList.add("hidden");
+        questionContainer.classList.remove("hidden");
         askQuestion();
     });
 
-    function roundTimeToHour(time) {
-        let [hour, minute] = time.split(/[: ]/);
-        let period = time.includes("PM") ? "PM" : "AM";
+    nextBtn.addEventListener("click", function () {
+        userResponses[questions[currentQuestion]] = answerInput.value;
+        answerInput.value = "";
+        currentQuestion++;
 
-        hour = parseInt(hour);
-        if (minute && parseInt(minute) >= 30) {
-            hour++;
+        if (currentQuestion < questions.length) {
+            askQuestion();
+        } else {
+            questionContainer.classList.add("hidden");
+            generateTimetable();
         }
-        if (period === "PM" && hour !== 12) {
-            hour += 12;
-        }
-        if (period === "AM" && hour === 12) {
-            hour = 0;
-        }
-        return hour;
+    });
+
+    function askQuestion() {
+        questionText.textContent = questions[currentQuestion];
+    }
+
+    function roundToNearestHour(time) {
+        const [hour, minute] = time.split(":").map(Number);
+        return minute >= 30 ? hour + 1 : hour;
+    }
+
+    function parseTime(timeString) {
+        let [time, period] = timeString.split(" ");
+        let [hour, minute] = time.split(":").map(Number);
+
+        if (period.toLowerCase() === "pm" && hour !== 12) hour += 12;
+        if (period.toLowerCase() === "am" && hour === 12) hour = 0;
+
+        return roundToNearestHour(`${hour}:${minute}`);
     }
 
     function generateTimetable() {
-        timetableContainer.style.display = "block";
+        timetableContainer.classList.remove("hidden");
         timetableBody.innerHTML = "";
 
-        let wakeHour = roundTimeToHour(userInputs.wakeTime);
-        let sleepHour = roundTimeToHour(userInputs.sleepTime);
+        let wakeUp = parseTime(userResponses[questions[0]]);
+        let sleep = parseTime(userResponses[questions[1]]);
+        let [workStart, workEnd] = userResponses[questions[2]].split(" - ").map(parseTime);
+        let studyHours = parseInt(userResponses[questions[3]]);
+        let leisureHours = parseInt(userResponses[questions[4]]);
+        let gymHours = parseInt(userResponses[questions[5]]);
+        let friendsHours = parseInt(userResponses[questions[6]]);
 
-        let workHours = userInputs.workHours.toLowerCase() !== "none"
-            ? userInputs.workHours.split("-").map(t => roundTimeToHour(t.trim()))
-            : null;
+        let totalHours = sleep - wakeUp;
+        let availableHours = totalHours - (workEnd - workStart);
 
-        let availableHours = Array.from({ length: sleepHour - wakeHour }, (_, i) => wakeHour + i);
+        let schedule = {};
+        let tasks = [
+            { name: "work", hours: workEnd - workStart, color: "task work" },
+            { name: "study", hours: studyHours, color: "task study" },
+            { name: "leisure", hours: leisureHours, color: "task leisure" },
+            { name: "gym", hours: gymHours, color: "task gym" },
+            { name: "friends", hours: friendsHours, color: "task friends" }
+        ];
 
-        availableHours.forEach(hour => {
+        for (let i = wakeUp; i < sleep; i++) {
+            schedule[i] = "free";
+        }
+
+        for (let i = workStart; i < workEnd; i++) {
+            schedule[i] = "work";
+        }
+
+        tasks.forEach(task => {
+            let allocated = 0;
+            for (let i = wakeUp; i < sleep && allocated < task.hours; i++) {
+                if (schedule[i] === "free") {
+                    schedule[i] = task.name;
+                    allocated++;
+                }
+            }
+        });
+
+        for (let i = wakeUp; i < sleep; i++) {
             let row = document.createElement("tr");
             let timeCell = document.createElement("td");
-            let formattedTime = hour > 12 ? `${hour - 12}:00 PM` : `${hour}:00 AM`;
-            if (hour === 12) formattedTime = "12:00 PM";
-            if (hour === 0) formattedTime = "12:00 AM";
-            timeCell.innerText = formattedTime;
+            timeCell.textContent = `${i % 12 || 12} ${i < 12 ? "AM" : "PM"}`;
             row.appendChild(timeCell);
 
-            for (let i = 0; i < 7; i++) {
+            for (let j = 0; j < 7; j++) {
                 let cell = document.createElement("td");
-
-                if (workHours && hour >= workHours[0] && hour < workHours[1] && i < 5) {
-                    cell.classList.add("task", "work");
-                    cell.innerText = "Work/School";
+                if (schedule[i] !== "free") {
+                    cell.textContent = schedule[i].charAt(0).toUpperCase() + schedule[i].slice(1);
+                    cell.classList.add("task", `task ${schedule[i]}`);
                 }
                 row.appendChild(cell);
             }
             timetableBody.appendChild(row);
-        });
+        }
     }
-
-    askQuestion();
 });

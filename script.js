@@ -2,9 +2,10 @@ const questions = [
     "What is your typical work/school schedule?",
     "What time do you wake up?",
     "What time do you sleep?",
-    "What activities do you want to include in your schedule?",
-    "How much time do you need for leisure?",
-    "How much time do you need for studying or work?",
+    "How many hours for leisure?",
+    "How many hours for study?",
+    "How many hours for gym?",
+    "How many hours for friends time?"
 ];
 
 let currentQuestion = 0;
@@ -13,7 +14,7 @@ const questionText = document.getElementById("question-text");
 const userAnswer = document.getElementById("user-answer");
 const nextBtn = document.getElementById("next-btn");
 const timetableContainer = document.querySelector(".timetable-container");
-const timetable = document.getElementById("timetable");
+const timetableBody = document.querySelector("#timetable tbody");
 
 nextBtn.addEventListener("click", () => {
     const answer = userAnswer.value.trim();
@@ -37,27 +38,46 @@ function generateTimetable() {
     const wakeTime = parseInt(userResponses["What time do you wake up?"]);
     const sleepTime = parseInt(userResponses["What time do you sleep?"]);
 
-    let timeSlots = [];
+    let leisureHours = parseInt(userResponses["How many hours for leisure?"]);
+    let studyHours = parseInt(userResponses["How many hours for study?"]);
+    let gymHours = parseInt(userResponses["How many hours for gym?"]);
+    let friendsHours = parseInt(userResponses["How many hours for friends time?"]);
+
+    let availableHours = sleepTime - wakeTime;
+    let schedule = [];
+
     for (let i = wakeTime; i < sleepTime; i++) {
-        timeSlots.push(i + ":00");
+        schedule.push({ time: `${i}:00`, task: "" });
     }
 
-    let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    timetable.innerHTML = "";
-
-    for (let i = 0; i < days.length; i++) {
-        let dayHeader = document.createElement("div");
-        dayHeader.innerText = days[i];
-        dayHeader.classList.add("timetable-cell");
-        timetable.appendChild(dayHeader);
-    }
-
-    for (let i = 0; i < timeSlots.length; i++) {
-        for (let j = 0; j < days.length; j++) {
-            let cell = document.createElement("div");
-            cell.innerText = timeSlots[i];
-            cell.classList.add("timetable-cell");
-            timetable.appendChild(cell);
+    function assignTask(hours, taskName) {
+        for (let i = 0; i < schedule.length; i++) {
+            if (schedule[i].task === "" && hours > 0) {
+                schedule[i].task = taskName;
+                hours--;
+            }
         }
+    }
+
+    assignTask(studyHours, "Study");
+    assignTask(leisureHours, "Leisure");
+    assignTask(gymHours, "Gym");
+    assignTask(friendsHours, "Friends");
+
+    timetableBody.innerHTML = "";
+
+    for (let i = 0; i < schedule.length; i++) {
+        let row = document.createElement("tr");
+        let timeCell = document.createElement("td");
+        timeCell.innerText = schedule[i].time;
+        row.appendChild(timeCell);
+
+        for (let j = 0; j < 7; j++) {
+            let taskCell = document.createElement("td");
+            taskCell.innerText = schedule[i].task;
+            row.appendChild(taskCell);
+        }
+
+        timetableBody.appendChild(row);
     }
 }

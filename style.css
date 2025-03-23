@@ -82,3 +82,8 @@ td {
     background-color: #FBFBFF;
 }
 
+.work { background-color: #A9A9A9; } /* Gray */
+.study { background-color: #4A90E2; } /* Blue */
+.leisure { background-color: #FFD700; } /* Yellow */
+.gym { background-color: #32CD32; } /* Green */
+.friends { background-color: #FFA07A; } /* Orange */

@@ -1,41 +1,63 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const questions = [
-        "What is your typical work/school schedule?",
-        "What time do you usually wake up and sleep?",
-        "Do you have any fixed commitments (gym, religious, family time, etc.)?",
-        "How much leisure time would you like per week?",
-        "How often do you want to hang out with friends?",
-        "Any other important routines?"
-    ];
+const questions = [
+    "What is your typical work/school schedule?",
+    "What time do you wake up?",
+    "What time do you sleep?",
+    "What activities do you want to include in your schedule?",
+    "How much time do you need for leisure?",
+    "How much time do you need for studying or work?",
+];
 
-    let currentQuestionIndex = 0;
-    const questionElement = document.getElementById("question");
-    const textarea = document.getElementById("answer");
-    const nextButton = document.getElementById("next-button");
-    let userResponses = [];
+let currentQuestion = 0;
+let userResponses = {};
+const questionText = document.getElementById("question-text");
+const userAnswer = document.getElementById("user-answer");
+const nextBtn = document.getElementById("next-btn");
+const timetableContainer = document.querySelector(".timetable-container");
+const timetable = document.getElementById("timetable");
 
-    nextButton.addEventListener("click", function () {
-        const userInput = textarea.value.trim();
+nextBtn.addEventListener("click", () => {
+    const answer = userAnswer.value.trim();
+    if (answer !== "") {
+        userResponses[questions[currentQuestion]] = answer;
+        userAnswer.value = "";
 
-        if (userInput === "") {
-            alert("Please enter an answer before proceeding.");
-            return;
-        }
-
-        userResponses.push(userInput);
-        textarea.value = ""; // Clear the text area
-
-        if (currentQuestionIndex < questions.length - 1) {
-            currentQuestionIndex++;
-            questionElement.innerText = questions[currentQuestionIndex];
+        if (currentQuestion < questions.length - 1) {
+            currentQuestion++;
+            questionText.innerText = questions[currentQuestion];
         } else {
-            generateTimetable(userResponses);
+            generateTimetable();
         }
-    });
-
-    function generateTimetable(responses) {
-        console.log("User responses:", responses);
-        alert("Your AI-generated timetable will be displayed next!");
-        // Future: Here, you will process responses and generate a timetable.
     }
 });
+
+function generateTimetable() {
+    document.querySelector(".container").classList.add("hidden");
+    timetableContainer.classList.remove("hidden");
+
+    const wakeTime = parseInt(userResponses["What time do you wake up?"]);
+    const sleepTime = parseInt(userResponses["What time do you sleep?"]);
+
+    let timeSlots = [];
+    for (let i = wakeTime; i < sleepTime; i++) {
+        timeSlots.push(i + ":00");
+    }
+
+    let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    timetable.innerHTML = "";
+
+    for (let i = 0; i < days.length; i++) {
+        let dayHeader = document.createElement("div");
+        dayHeader.innerText = days[i];
+        dayHeader.classList.add("timetable-cell");
+        timetable.appendChild(dayHeader);
+    }
+
+    for (let i = 0; i < timeSlots.length; i++) {
+        for (let j = 0; j < days.length; j++) {
+            let cell = document.createElement("div");
+            cell.innerText = timeSlots[i];
+            cell.classList.add("timetable-cell");
+            timetable.appendChild(cell);
+        }
+    }
+}

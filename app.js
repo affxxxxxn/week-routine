@@ -1,72 +1,54 @@
-let currentStep = 0;
-let userSchedule = {
-    fixedActivities: [],
-    leisureTime: [],
-    personalTime: []
-};
-
 const questions = [
-    "What are your fixed activities (school, work)?",
-    "What time do you want to reserve for leisure activities?",
-    "Do you want to set any specific time for friends' activities?",
-    "Would you like to set any other fixed time for other activities?"
+    "What is your typical work/school schedule?",
+    "What time do you usually wake up?",
+    "What time do you go to sleep?",
+    "What are your preferred leisure activities?",
+    "When would you like to spend time with friends?"
 ];
 
-const nextButton = document.getElementById('next-btn');
-const responseInput = document.getElementById('response');
-const questionText = document.getElementById('question');
-const weeklyView = document.querySelector('.weekly-view');
+let currentQuestion = 0;
+let userData = {
+    workSchedule: "",
+    wakeUpTime: "",
+    sleepTime: "",
+    leisureActivities: "",
+    friendsTime: ""
+};
 
-nextButton.addEventListener('click', handleNext);
+const nextButton = document.getElementById('next-question');
+const questionContainer = document.getElementById('question-container');
+const userAnswer = document.getElementById('user-answer');
+const resultSection = document.getElementById('result-section');
+const weeklyView = document.getElementById('weekly-view');
 
-function handleNext() {
-    const userResponse = responseInput.value.trim();
-    if (userResponse) {
-        storeUserResponse(userResponse);
-        responseInput.value = ''; // Clear input field
-        
-        if (currentStep < questions.length - 1) {
-            currentStep++;
-            questionText.textContent = questions[currentStep];
-        } else {
-            generateSchedule();
-        }
+nextButton.addEventListener('click', function() {
+    // Save the current answer
+    userData[Object.keys(userData)[currentQuestion]] = userAnswer.value.trim();
+
+    // Move to the next question
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+        // Update the question
+        document.getElementById('question').innerText = questions[currentQuestion];
+        userAnswer.value = '';  // Clear the answer box
     } else {
-        alert('Please provide a response.');
+        // End of questions, generate timetable
+        questionContainer.style.display = 'none';
+        resultSection.style.display = 'block';
+        generateTimetable();
     }
-}
+});
 
-function storeUserResponse(response) {
-    if (currentStep === 0) {
-        userSchedule.fixedActivities.push(response);
-    } else if (currentStep === 1) {
-        userSchedule.leisureTime.push(response);
-    } else if (currentStep === 2) {
-        userSchedule.personalTime.push(response);
-    }
-}
-
-function generateSchedule() {
-    questionText.textContent = "Generating your schedule...";
-
-    // Here, you can add logic to calculate available time slots and generate the timetable
-    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-    
-    // Example of adding fixed events (school/work) and available leisure time
-    days.forEach(day => {
-        const dayDiv = document.getElementById(day);
-        const fixedEvent = document.createElement('div');
-        fixedEvent.classList.add('task');
-        fixedEvent.textContent = "Fixed Activity: School/Work (8 AM - 3 PM)"; // Replace with actual schedule
-        dayDiv.appendChild(fixedEvent);
-        
-        const leisureEvent = document.createElement('div');
-        leisureEvent.classList.add('task');
-        leisureEvent.textContent = `Leisure Time: 6 PM - 8 PM`; // Example time
-        dayDiv.appendChild(leisureEvent);
-    });
-
-    // Now display the weekly view
-    document.getElementById('questions-section').style.display = 'none';
-    weeklyView.style.display = 'grid';
+function generateTimetable() {
+    // For simplicity, let's create a basic timetable layout based on the user's input
+    const timetable = document.createElement('div');
+    timetable.innerHTML = `
+        <p>Work/School Schedule: ${userData.workSchedule}</p>
+        <p>Wake Up Time: ${userData.wakeUpTime}</p>
+        <p>Sleep Time: ${userData.sleepTime}</p>
+        <p>Leisure Activities: ${userData.leisureActivities}</p>
+        <p>Friends' Time: ${userData.friendsTime}</p>
+    `;
+    weeklyView.appendChild(timetable);
 }

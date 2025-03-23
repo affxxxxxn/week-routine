@@ -8,14 +8,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>AI Timetable Generator</h1>
-        <div id="question-container">
-            <p id="question-text"></p>
-            <input type="text" id="answer-box">
-            <button id="next-button">Next</button>
+        <h1>AI-Powered Timetable Generator</h1>
+        <button id="startBtn">Start</button>
+        <div id="questionContainer" class="hidden">
+            <p id="questionText"></p>
+            <input type="text" id="answerInput">
+            <button id="nextBtn">Next</button>
         </div>
-
-        <div id="timetable-container" style="display: none;">
+        <div id="timetableContainer" class="hidden">
             <h2>Your Generated Timetable</h2>
             <table id="timetable">
                 <thead>
@@ -30,14 +30,11 @@
                         <th>Sunday</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- Timetable rows will be inserted here -->
-                </tbody>
+                <tbody id="timetableBody"></tbody>
             </table>
-            <button id="customize-button">Customize</button>
+            <button id="customizeBtn">Customize</button>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>

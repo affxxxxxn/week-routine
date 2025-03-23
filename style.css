@@ -3,72 +3,37 @@ body {
     background-color: #FBFBFF;
     color: #040F16;
     text-align: center;
-    margin: 0;
-    padding: 0;
 }
 
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.question-box {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 400px;
-}
-
-textarea {
-    width: 100%;
-    height: 80px;
-    margin-top: 10px;
-    padding: 10px;
-    border: 1px solid #0B4F6C;
-    border-radius: 5px;
-    resize: none;
+    margin: 50px auto;
+    width: 80%;
 }
 
 button {
-    background-color: #01BAEF;
+    background-color: #0B4F6C;
     color: white;
     border: none;
-    padding: 10px;
-    margin-top: 10px;
-    width: 100%;
+    padding: 10px 20px;
     cursor: pointer;
-    border-radius: 5px;
 }
 
 button:hover {
-    background-color: #0B4F6C;
+    background-color: #01BAEF;
 }
 
 .hidden {
     display: none;
 }
 
-.timetable-container {
-    margin-top: 20px;
-    padding: 20px;
-}
-
-.table-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
 table {
-    width: 90%;
+    width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
 }
 
 th, td {
-    border: 1px solid #0B4F6C;
+    border: 1px solid #040F16;
     padding: 10px;
     text-align: center;
 }
@@ -78,12 +43,14 @@ th {
     color: white;
 }
 
-td {
-    background-color: #FBFBFF;
+.task {
+    color: white;
+    font-weight: bold;
+    padding: 5px;
 }
 
-.work { background-color: #A9A9A9; } /* Gray */
-.study { background-color: #4A90E2; } /* Blue */
-.leisure { background-color: #FFD700; } /* Yellow */
-.gym { background-color: #32CD32; } /* Green */
-.friends { background-color: #FFA07A; } /* Orange */
+.task.study { background-color: #FFA500; }   /* Orange */
+.task.leisure { background-color: #32CD32; } /* Green */
+.task.work { background-color: #DC143C; }    /* Red */
+.task.friends { background-color: #8A2BE2; } /* Purple */
+.task.gym { background-color: #0000FF; }     /* Blue */
